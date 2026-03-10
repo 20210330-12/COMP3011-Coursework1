@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-25d*1$bdn-q@7asi-i*(tw)gv1bubxni4ud2_=^wxpe(m#nasl'
+SECRET_KEY = 'django-insecure-4)!2_+%bbsm#!w8aw9*c(lkqc()_e3-e02h1a5@txp#@6av^!y'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,10 +37,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
     'rest_framework',
-    'drf_spectacular',
+
     'accounts',
-    'core',
+    'football',
     'community',
 ]
 
@@ -125,22 +126,3 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
-AUTH_USER_MODEL = 'accounts.CustomUser'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
-}
-
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'PitchBlend Lite API',
-    'DESCRIPTION': 'EPL Match Statistics and Team-based MOM Voting API',
-    'VERSION': '1.0.0',
-}
-
-TIME_ZONE = 'Europe/London'
-USE_TZ = True
