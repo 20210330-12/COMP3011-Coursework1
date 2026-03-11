@@ -8,6 +8,7 @@ from .serializers import (
     MatchDetailSerializer,
 )
 from django.db.models import Sum
+from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -190,6 +191,70 @@ class MostMinutesView(APIView):
                 "player_name": row["player__name"],
                 "team": row["team__name"],
                 "total_minutes": row["total_minutes"],
+            })
+
+        return Response(results)
+
+
+
+class TeamPlayersView(ListAPIView):
+    serializer_class = PlayerSerializer
+
+    def get_queryset(self):
+        team_id = self.kwargs["pk"]
+        return Player.objects.select_related("current_team").filter(current_team_id=team_id).order_by("name")
+
+
+class PlayerMatchesView(ListAPIView):
+    serializer_class = MatchSerializer
+
+    def get_queryset(self):
+        player_id = self.kwargs["pk"]
+
+        match_ids = (
+            Appearance.objects.filter(player_id=player_id)
+            .values_list("match_id", flat=True)
+            .distinct()
+        )
+
+        return (
+            Match.objects.select_related("home_team", "away_team")
+            .filter(id__in=match_ids)
+            .order_by("-match_date")
+        )
+
+
+class TeamTopScorersView(APIView):
+    def get(self, request, pk):
+        season = request.query_params.get("season")
+        limit = int(request.query_params.get("limit", 5))
+
+        queryset = Appearance.objects.filter(team_id=pk)
+
+        if season:
+            queryset = queryset.filter(match__season=season)
+        else:
+            latest_season = (
+                queryset.values_list("match__season", flat=True)
+                .order_by("-match__season")
+                .first()
+            )
+            queryset = queryset.filter(match__season=latest_season)
+
+        data = (
+            queryset.values("player__id", "player__name", "team__name")
+            .annotate(total_goals=Sum("goals"))
+            .order_by("-total_goals")[:limit]
+        )
+
+        results = []
+        for row in data:
+            results.append({
+                "player_id": row["player__id"],
+                "player_name": row["player__name"],
+                "team": row["team__name"],
+                "total_goals": row["total_goals"],
+                "season": season if season else latest_season,
             })
 
         return Response(results)

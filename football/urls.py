@@ -9,6 +9,9 @@ from .views import (
     TopScorersView,
     TopAssistsView,
     MostMinutesView,
+    TeamPlayersView,
+    PlayerMatchesView,
+    TeamTopScorersView,
 )
 
 urlpatterns = [
@@ -24,4 +27,8 @@ urlpatterns = [
     path("analytics/top-scorers/", TopScorersView.as_view()),
     path("analytics/top-assists/", TopAssistsView.as_view()),
     path("analytics/most-minutes/", MostMinutesView.as_view()),
+
+    path("teams/<int:pk>/players/", TeamPlayersView.as_view(), name="team-players"),
+    path("players/<int:pk>/matches/", PlayerMatchesView.as_view(), name="player-matches"),
+    path("teams/<int:pk>/top-scorers/", TeamTopScorersView.as_view(), name="team-top-scorers"),
 ]

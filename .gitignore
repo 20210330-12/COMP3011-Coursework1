@@ -216,3 +216,6 @@ data/*.csv
 # OS / editor
 .DS_Store
 .vscode/
+
+# AWS keys
+*.pem
