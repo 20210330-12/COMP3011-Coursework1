@@ -11,6 +11,7 @@ from django.db.models import Sum
 from rest_framework.generics import ListAPIView
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from drf_spectacular.utils import extend_schema, OpenApiParameter, OpenApiTypes
 
 
 class TeamListView(generics.ListAPIView):
@@ -77,6 +78,24 @@ class MatchDetailView(generics.RetrieveAPIView):
     serializer_class = MatchDetailSerializer
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="season",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Season year, e.g. 2023"
+        ),
+        OpenApiParameter(
+            name="limit",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Number of results to return"
+        ),
+    ]
+)
 class TopScorersView(APIView):
 
     def get(self, request):
@@ -88,13 +107,14 @@ class TopScorersView(APIView):
 
         if season:
             queryset = queryset.filter(match__season=season)
+            selected_season = int(season)
         else:
-            latest_season = (
+            selected_season = (
                 queryset.values_list("match__season", flat=True)
                 .order_by("-match__season")
                 .first()
             )
-            queryset = queryset.filter(match__season=latest_season)
+            queryset = queryset.filter(match__season=selected_season)
 
         data = (
             queryset
@@ -111,12 +131,31 @@ class TopScorersView(APIView):
                 "player_name": row["player__name"],
                 "team": row["team__name"],
                 "total_goals": row["total_goals"],
+                "season": selected_season,
             })
 
         return Response(results)
 
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="season",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Season year, e.g. 2023"
+        ),
+        OpenApiParameter(
+            name="limit",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Number of results to return"
+        ),
+    ]
+)
 class TopAssistsView(APIView):
 
     def get(self, request):
@@ -128,13 +167,14 @@ class TopAssistsView(APIView):
 
         if season:
             queryset = queryset.filter(match__season=season)
+            selected_season = int(season)
         else:
-            latest_season = (
+            selected_season = (
                 queryset.values_list("match__season", flat=True)
                 .order_by("-match__season")
                 .first()
             )
-            queryset = queryset.filter(match__season=latest_season)
+            queryset = queryset.filter(match__season=selected_season)
 
         data = (
             queryset
@@ -151,12 +191,31 @@ class TopAssistsView(APIView):
                 "player_name": row["player__name"],
                 "team": row["team__name"],
                 "total_assists": row["total_assists"],
+                "season": selected_season,
             })
 
         return Response(results)
     
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="season",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Season year, e.g. 2023"
+        ),
+        OpenApiParameter(
+            name="limit",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Number of results to return"
+        ),
+    ]
+)
 class MostMinutesView(APIView):
 
     def get(self, request):
@@ -168,13 +227,14 @@ class MostMinutesView(APIView):
 
         if season:
             queryset = queryset.filter(match__season=season)
+            selected_season = int(season)
         else:
-            latest_season = (
+            selected_season = (
                 queryset.values_list("match__season", flat=True)
                 .order_by("-match__season")
                 .first()
             )
-            queryset = queryset.filter(match__season=latest_season)
+            queryset = queryset.filter(match__season=selected_season)
 
         data = (
             queryset
@@ -191,6 +251,7 @@ class MostMinutesView(APIView):
                 "player_name": row["player__name"],
                 "team": row["team__name"],
                 "total_minutes": row["total_minutes"],
+                "season": selected_season,
             })
 
         return Response(results)
@@ -224,6 +285,24 @@ class PlayerMatchesView(ListAPIView):
         )
 
 
+@extend_schema(
+    parameters=[
+        OpenApiParameter(
+            name="season",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Season year, e.g. 2023"
+        ),
+        OpenApiParameter(
+            name="limit",
+            type=OpenApiTypes.INT,
+            location=OpenApiParameter.QUERY,
+            required=False,
+            description="Number of results to return"
+        ),
+    ]
+)
 class TeamTopScorersView(APIView):
     def get(self, request, pk):
         season = request.query_params.get("season")
@@ -233,13 +312,14 @@ class TeamTopScorersView(APIView):
 
         if season:
             queryset = queryset.filter(match__season=season)
+            selected_season = int(season)
         else:
-            latest_season = (
+            selected_season = (
                 queryset.values_list("match__season", flat=True)
                 .order_by("-match__season")
                 .first()
             )
-            queryset = queryset.filter(match__season=latest_season)
+            queryset = queryset.filter(match__season=selected_season)
 
         data = (
             queryset.values("player__id", "player__name", "team__name")
@@ -254,7 +334,7 @@ class TeamTopScorersView(APIView):
                 "player_name": row["player__name"],
                 "team": row["team__name"],
                 "total_goals": row["total_goals"],
-                "season": season if season else latest_season,
+                "season": season if season else selected_season,
             })
 
         return Response(results)
