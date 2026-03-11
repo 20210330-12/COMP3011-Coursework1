@@ -205,3 +205,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+
+# Database
+db.sqlite3
+
+# CSV data files
+data/*.csv
+
+# OS / editor
+.DS_Store
+.vscode/
