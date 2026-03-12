@@ -153,7 +153,26 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'COMP3011-1 API',
-    'DESCRIPTION': 'A Django REST API for football data, community posts, comments, and user authentication.',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
+    "DESCRIPTION": "REST API for football teams, players, matches, analytics, and community discussion features.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "SCHEMA_PATH_PREFIX": r"/api",
+    "TAGS": [
+        {"name": "Authentication", "description": "User registration, login, and current user profile"},
+        {"name": "Teams", "description": "Team-related endpoints"},
+        {"name": "Players", "description": "Player-related endpoints"},
+        {"name": "Matches", "description": "Match-related endpoints"},
+        {"name": "Analytics", "description": "Computed football statistics and leaderboards"},
+        {"name": "Posts", "description": "Community discussion posts"},
+        {"name": "Comments", "description": "Community comments"},
+    ],
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "displayOperationId": False,
+        "defaultModelsExpandDepth": -1,
+        "defaultModelExpandDepth": 2,
+        "docExpansion": "list",
+        "filter": True,
+        "persistAuthorization": True,
+    },
 }

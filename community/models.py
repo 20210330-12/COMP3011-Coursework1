@@ -24,6 +24,11 @@ class Post(models.Model):
         blank=True,
         related_name="posts"
     )
+    liked_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_posts",
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -43,8 +48,13 @@ class Comment(models.Model):
         related_name="comments"
     )
     content = models.TextField()
+    liked_by = models.ManyToManyField(
+        settings.AUTH_USER_MODEL,
+        related_name="liked_comments",
+        blank=True,
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Comment by {self.author} on {self.post}"
+        return f"Comment by {self.author} on post {self.post}"

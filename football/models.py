@@ -22,7 +22,6 @@ class Player(models.Model):
     external_id = models.CharField(max_length=50, unique=True)
     name = models.CharField(max_length=100)
     full_name = models.CharField(max_length=150, blank=True)
-    date_of_birth = models.DateField(null=True, blank=True)
     nationality = models.CharField(max_length=100, blank=True)
     position = models.CharField(max_length=50, blank=True)
     current_team = models.ForeignKey(

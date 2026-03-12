@@ -32,7 +32,6 @@ class PlayerSerializer(serializers.ModelSerializer):
             "external_id",
             "name",
             "full_name",
-            "date_of_birth",
             "nationality",
             "position",
             "current_team",

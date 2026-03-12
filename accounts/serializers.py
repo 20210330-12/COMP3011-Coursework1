@@ -1,18 +1,27 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import UserProfile
+from football.models import Team
 
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=8)
     display_name = serializers.CharField(max_length=100)
+    bio = serializers.CharField(required=False, allow_blank=True)
+    favourite_team = serializers.PrimaryKeyRelatedField(
+        queryset=Team.objects.all(),
+        required=False,
+        allow_null=True,
+    )
 
     class Meta:
         model = User
-        fields = ["username", "email", "password", "display_name"]
+        fields = ["username", "email", "password", "display_name", "bio", "favourite_team"]
 
     def create(self, validated_data):
         display_name = validated_data.pop("display_name")
+        bio = validated_data.pop("bio", "")
+        favourite_team = validated_data.pop("favourite_team", None)
 
         user = User.objects.create_user(
             username=validated_data["username"],
@@ -22,7 +31,9 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         UserProfile.objects.create(
             user=user,
-            display_name=display_name
+            display_name=display_name,
+            bio=bio,
+            favourite_team=favourite_team,
         )
 
         return user
