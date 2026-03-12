@@ -27,7 +27,7 @@ The system combines two domains in one service:
    - comments
    - likes on posts and comments
 
-The project was designed to satisfy the COMP3011 requirement for a **data-driven web API with database integration**, clear documentation, external deployment, and justification of design choices. The coursework brief explicitly highlights sports analytics APIs as a suitable project direction, including CRUD for teams, players, and matches plus analytical endpoints for leaderboards and performance summaries. :contentReference[oaicite:1]{index=1}
+The project was designed to satisfy the COMP3011 requirement for a **data-driven web API with database integration**, clear documentation, external deployment, and justification of design choices. The coursework brief explicitly highlights sports analytics APIs as a suitable project direction, including CRUD for teams, players, and matches plus analytical endpoints for leaderboards and performance summaries.
 
 ---
 
@@ -61,7 +61,7 @@ The project was designed to satisfy the COMP3011 requirement for a **data-driven
 ### API Documentation PDF
 `COMP3011_API_Documentation.pdf`
 
-> This repository submission should include the exported API documentation PDF above, as required by the coursework brief. The brief states that API documentation must be referenced in the README as a PDF file. :contentReference[oaicite:2]{index=2}
+> This repository submission should include the exported API documentation PDF above, as required by the coursework brief. The brief states that API documentation must be referenced in the README as a PDF file.
 
 ---
 
@@ -73,7 +73,7 @@ The module brief requires:
 - correct JSON responses and status codes
 - documentation
 - runnable code
-- external hosting or equivalent demonstration environment :contentReference[oaicite:3]{index=3}
+- external hosting or equivalent demonstration environment
 
 This project satisfies those requirements through:
 - CRUD-style community resources (`posts`, `comments`)
@@ -84,7 +84,7 @@ This project satisfies those requirements through:
 - Swagger documentation
 - external deployment on AWS EC2
 
-The brief also encourages public datasets, sports analytics use cases, and declared use of Generative AI in a structured and reflective way. :contentReference[oaicite:4]{index=4}
+The brief also encourages public datasets, sports analytics use cases, and declared use of Generative AI in a structured and reflective way.
 
 ---
 
@@ -103,7 +103,7 @@ The brief also encourages public datasets, sports analytics use cases, and decla
 | Deployment | AWS EC2 |
 | Testing | DRF APITestCase / Django test runner |
 
-The project dependencies in `requirements.txt` include Django, Django REST Framework, `drf-spectacular`, and `requests`. :contentReference[oaicite:5]{index=5}
+The project dependencies in `requirements.txt` include Django, Django REST Framework, `drf-spectacular`, and `requests`.
 
 ---
 
@@ -132,7 +132,7 @@ COMP3011-Coursework1/
 | `community` | posts, comments, likes, author-based permissions |
 | `config` | global routing, REST framework settings, schema and Swagger configuration |
 
-This separation makes the code easier to maintain and supports the “clean, modular code design” expected in higher grade bands. The coursework criteria explicitly reward modular design, thorough testing, professional deployment, and comprehensive documentation. :contentReference[oaicite:6]{index=6}
+This separation makes the code easier to maintain and supports the “clean, modular code design” expected in higher grade bands. The coursework criteria explicitly reward modular design, thorough testing, professional deployment, and comprehensive documentation.
 
 ---
 
@@ -180,25 +180,42 @@ This is worth mentioning in the technical report and oral exam because it demons
 
 ```text
 accounts/
+├── migrations/
+├── admin.py
+├── apps.py
 ├── models.py
 ├── serializers.py
+├── tests.py
 ├── views.py
 └── urls.py
 
 football/
+├── migrations/
+├── management/
+   └── commands/
+      └── import_football_data.py
+├── admin.py
+├── apps.py
 ├── models.py
 ├── serializers.py
+├── tests.py
 ├── views.py
 └── urls.py
 
 community/
+├── migrations/
+├── admin.py
+├── apps.py
 ├── models.py
 ├── serializers.py
 ├── permissions.py
+├── tests.py
 ├── views.py
 └── urls.py
 
 config/
+├── asgi.py
+├── wsgi.py
 ├── settings.py
 └── urls.py
 ```
@@ -209,11 +226,11 @@ The project settings include:
 - token authentication as the default authentication class
 - pagination with page size 10
 - throttling for anonymous and authenticated users
-- drf-spectacular as the default schema generator :contentReference[oaicite:7]{index=7}
+- drf-spectacular as the default schema generator
 
 The configured throttle limits are:
 - anonymous users: `30/minute`
-- authenticated users: `120/minute` :contentReference[oaicite:8]{index=8}
+- authenticated users: `120/minute`
 
 ---
 
@@ -226,77 +243,16 @@ The API models two connected domains:
 
 The football side is designed around a normalized structure where player performance is stored per match in the `Appearance` table. This makes aggregate analytics practical and efficient.
 
-### Main models
+The core entities are:
+- Team
+- Player
+- Match
+- Appearance
+- UserProfile
+- Post
+- Comment
 
-#### `Team`
-Stores club-level metadata such as:
-- name
-- short name
-- country
-- competition
-- season
-- stadium
-- founded year
-- logo URL :contentReference[oaicite:9]{index=9}
-
-#### `Player`
-Stores player information such as:
-- name
-- full name
-- nationality
-- position
-- current team
-- market value
-- height
-- preferred foot
-- image URL :contentReference[oaicite:10]{index=10}
-
-#### `Match`
-Stores match-level data such as:
-- competition
-- season
-- match date
-- home team
-- away team
-- scores
-- venue
-- attendance :contentReference[oaicite:11]{index=11}
-
-#### `Appearance`
-Bridges a player, a match, and a team, and stores:
-- minutes played
-- goals
-- assists
-- cards
-- rating
-- starting status
-- appearance date
-
-The model also enforces uniqueness across `(player, match, team)`, preventing duplicate appearance records. :contentReference[oaicite:12]{index=12}
-
-#### `UserProfile`
-Extends the Django user with:
-- display name
-- bio
-- favourite team :contentReference[oaicite:13]{index=13}
-
-#### `Post`
-Community posts contain:
-- author
-- title
-- content
-- optional related team
-- optional related player
-- likes
-- timestamps :contentReference[oaicite:14]{index=14}
-
-#### `Comment`
-Comments contain:
-- post
-- author
-- content
-- likes
-- timestamps :contentReference[oaicite:15]{index=15}
+Among these, **Appearance** is the key bridge entity linking a player, a team, and a match. This model enables the analytics features of the system, including top scorers, top assists, most minutes played, and player appearance histories.
 
 ---
 
@@ -412,7 +368,7 @@ This project uses the public Kaggle dataset:
 | `games.csv` | `Match` |
 | `appearances.csv` | `Appearance` |
 
-The coursework brief explicitly encourages students to use public datasets and identifies Kaggle as a suitable source. It also encourages using GenAI to assist with dataset discovery and import scripting, provided the usage is declared. :contentReference[oaicite:16]{index=16}
+The coursework brief explicitly encourages students to use public datasets and identifies Kaggle as a suitable source. It also encourages using GenAI to assist with dataset discovery and import scripting, provided the usage is declared.
 
 ### Import command
 
@@ -460,7 +416,7 @@ SQLite was chosen because:
 - it integrates seamlessly with Django
 - it reduces operational complexity during development and assessment
 
-This choice is still aligned with the brief, which permits SQL databases and focuses more on design, implementation, documentation, and justification than on enterprise-scale infrastructure. :contentReference[oaicite:17]{index=17}
+This choice is still aligned with the brief, which permits SQL databases and focuses more on design, implementation, documentation, and justification than on enterprise-scale infrastructure.
 
 ---
 
@@ -478,7 +434,7 @@ Authentication is implemented using **DRF Token Authentication**.
 | POST | `/api/auth/logout/` | delete the current auth token |
 | DELETE | `/api/auth/delete/` | delete the authenticated account |
 
-These routes are defined in the accounts URLs configuration. :contentReference[oaicite:18]{index=18}
+These routes are defined in the accounts URLs configuration.
 
 ### Profile fields
 
@@ -552,7 +508,7 @@ The API is organized around clear resources.
 | GET | `/api/players/{id}/matches/` | matches played by a player |
 | GET | `/api/players/{id}/appearances/` | appearance summaries for a player |
 
-These endpoints are consistent with the `football` URL configuration. :contentReference[oaicite:20]{index=20}
+These endpoints are consistent with the `football` URL configuration.
 
 ### Community resources
 
@@ -593,7 +549,7 @@ The player list endpoint supports:
 - `position`
 - `nationality`
 - `name`
-- `ordering` (in the latest version of your implementation) :contentReference[oaicite:22]{index=22}
+- `ordering` (in the latest version of your implementation)
 
 Example:
 
@@ -605,7 +561,7 @@ GET /api/players/?team_id=1&name=Saka
 
 The match list endpoint supports:
 - `season`
-- `team_id` :contentReference[oaicite:23]{index=23}
+- `team_id`
 
 Example:
 
@@ -615,7 +571,7 @@ GET /api/matches/?season=2023&team_id=2
 
 ### Comment filtering
 
-Comments must be requested with `post_id` in the community view version you are currently using for assessment. If it is missing on GET, a validation error is raised. :contentReference[oaicite:24]{index=24}
+Comments must be requested with `post_id` in the community view version you are currently using for assessment. If it is missing on GET, a validation error is raised.
 
 Example:
 
@@ -699,7 +655,7 @@ The implementation:
   3. goals for descending
   4. team name ascending
 - assigns final league positions
-- returns the first 20 teams :contentReference[oaicite:26]{index=26}
+- returns the first 20 teams
 
 ### Algorithm summary
 
@@ -787,7 +743,7 @@ sequenceDiagram
 
 ## 19. Community Features and Permissions
 
-The community side of the project provides actual CRUD functionality for user-generated content, which is important because the brief requires database-backed CRUD operations. :contentReference[oaicite:27]{index=27}
+The community side of the project provides actual CRUD functionality for user-generated content, which is important because the brief requires database-backed CRUD operations.
 
 ### Posts
 Authenticated users can:
@@ -810,13 +766,12 @@ Anonymous users can:
 - read comments
 
 ### Permission rule
-`IsAuthorOrReadOnly` allows safe methods for everyone but restricts edits and deletes to the object author. :contentReference[oaicite:28]{index=28}
-
+`IsAuthorOrReadOnly` allows safe methods for everyone but restricts edits and deletes to the object author.
 ---
 
 ## 20. Error Handling and Status Codes
 
-The coursework brief explicitly expects correct status and error handling. :contentReference[oaicite:29]{index=29}
+The coursework brief explicitly expects correct status and error handling.
 
 Examples implemented in this project include:
 - `201 Created` for successful registration and resource creation
@@ -834,7 +789,7 @@ List endpoints use DRF page-number pagination.
 
 ### Configuration
 - default pagination class: `PageNumberPagination`
-- page size: `10` :contentReference[oaicite:31]{index=31}
+- page size: `10`
 
 ### Example
 
@@ -868,7 +823,7 @@ The API uses DRF throttling to reduce abuse and protect the service.
 
 ### Limits
 - anonymous: `30/minute`
-- authenticated user: `120/minute` :contentReference[oaicite:32]{index=32}
+- authenticated user: `120/minute`
 
 This is particularly useful for a public deployed API and demonstrates awareness of production concerns.
 
@@ -889,7 +844,7 @@ The settings also define tags for:
 - Matches
 - Analytics
 - Posts
-- Comments :contentReference[oaicite:34]{index=34}
+- Comments
 
 This improves documentation quality and makes the project easier to demonstrate during the oral examination.
 
@@ -910,7 +865,7 @@ Examples include:
 - login success and failure
 - authenticated `me` endpoint
 - logout token deletion
-- account deletion :contentReference[oaicite:35]{index=35}
+- account deletion
 
 #### Football tests
 Examples include:
@@ -920,7 +875,7 @@ Examples include:
 - match detail with nested appearances
 - team players endpoint
 - player appearances endpoint
-- top scorers and other analytics :contentReference[oaicite:36]{index=36}
+- top scorers and other analytics
 
 #### Community tests
 Examples include:
@@ -929,7 +884,7 @@ Examples include:
 - author-only update protection
 - comment filtering
 - comment creation
-- like and unlike behavior for posts and comments :contentReference[oaicite:37]{index=37}
+- like and unlike behavior for posts and comments
 
 ### Running tests
 
@@ -1050,7 +1005,7 @@ The coursework brief allows REST or GraphQL, but this project uses REST because:
 - the resource structure is clear and natural
 - DRF provides strong built-in support
 - REST is easy to document with Swagger
-- the endpoints map well to coursework expectations around CRUD and HTTP conventions :contentReference[oaicite:38]{index=38}
+- the endpoints map well to coursework expectations around CRUD and HTTP conventions
 
 ### Modular app design
 Separating `accounts`, `football`, and `community` improves maintainability and makes the system easier to present in the oral exam.
@@ -1079,7 +1034,7 @@ Current limitations include:
 4. **No frontend client**
    - the project is API-first and demonstrated through Swagger, curl, and tests rather than a separate web frontend
 
-These limitations should also be acknowledged in the technical report, because the brief expects reflection on limitations and future improvements. :contentReference[oaicite:39]{index=39}
+These limitations should also be acknowledged in the technical report, because the brief expects reflection on limitations and future improvements.
 
 ---
 
@@ -1100,7 +1055,7 @@ Possible future enhancements:
 
 ## 30. Generative AI Declaration
 
-This coursework is a **Green Light Assessment**, and the brief explicitly permits GenAI use provided it is declared. :contentReference[oaicite:40]{index=40}
+This coursework is a **Green Light Assessment**, and the brief explicitly permits GenAI use provided it is declared.
 
 Generative AI tools were used in the following ways:
 - debugging Django and DRF issues
@@ -1111,7 +1066,7 @@ Generative AI tools were used in the following ways:
 
 All generated suggestions were reviewed, adapted, tested, and integrated manually. Final responsibility for the design, implementation, and submission remains with the student.
 
-> Conversation logs and supporting evidence should be included in the supplementary material / appendix for the final submission package, as required by the brief. :contentReference[oaicite:41]{index=41}
+> Conversation logs and supporting evidence should be included in the supplementary material / appendix for the final submission package, as required by the brief.
 
 ---
 
@@ -1123,7 +1078,7 @@ This repository is intended to support the coursework deliverables required in t
 - `README.md`
 - API documentation PDF
 - technical report
-- presentation slides :contentReference[oaicite:42]{index=42}
+- presentation slides
 
 ### Recommended repository contents for submission
 
