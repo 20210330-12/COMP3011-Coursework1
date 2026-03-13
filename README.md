@@ -59,7 +59,7 @@ The project was designed to satisfy the COMP3011 requirement for a **data-driven
 `http://16.171.63.159/api/schema/`
 
 ### API Documentation PDF
-`COMP3011_API_Documentation.pdf`
+📄 **[COMP3011_API_Documentation.pdf](COMP3011_API_Documentation.pdf)**
 
 > This repository submission should include the exported API documentation PDF above, as required by the coursework brief. The brief states that API documentation must be referenced in the README as a PDF file.
 
