@@ -59,7 +59,11 @@ The project was designed to satisfy the COMP3011 requirement for a **data-driven
 `http://16.171.63.159/api/schema/`
 
 ### API Documentation PDF
+The full REST API documentation generated from the OpenAPI schema is available here:
+
 📄 **[COMP3011_API_Documentation.pdf](COMP3011_API_Documentation.pdf)**
+
+This document includes all endpoints, request/response schemas, parameters, authentication methods, and example responses.
 
 ---
 
